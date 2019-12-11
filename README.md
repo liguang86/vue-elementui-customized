@@ -90,3 +90,6 @@
         })
         ```
         
+### 示例
+
+[查看示例](https://liguang86.github.io/vue-elementui-customized/dist/)
