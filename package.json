@@ -1,7 +1,17 @@
 {
-  "name": "vue-elementui-customized",
+  "name": "@liguang/vue-elementui-customized",
   "version": "0.1.0",
-  "private": true,
+  "description": "自定义了Input、InputNumber、Loading、Tooltip、Upload 以及 Clickoutside",
+  "private": false,
+  "keyword": "vue-element-ui-customized",
+  "author": "liguang86@qq.com",
+  "license": "MIT",
+  "main": "src/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:liguang86/vue-elementui-customized.git"
+  },
+  "homepage": "https://github.com/liguang86/vue-elementui-customized",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
