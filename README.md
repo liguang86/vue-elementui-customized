@@ -2,7 +2,10 @@
 
 ### ElementUI
 
-使用时，需要在 `vue.config.js` 中配置 alias 如下(因为在Element源码内部，也使用了 elementui 别名)：
+使用时，需要在 `vue.config.js` 中配置 alias 如下(因为在Element源码内部，也使用了 element-ui 别名)：
+
+样式文件要单独引入
+`require('@liguang/vue-elementui-customized/src/elementui/packages/theme-chalk/src/index.scss')`
 
 ```vue
 const path = require('path')
@@ -13,9 +16,13 @@ function resolve (dir) {
 
 module.exports = {
   runtimeCompiler: true,
+  transpileDependencies: [
+    // 默认babel-loader忽略mode_modules，这里要让其编译
+    '@liguang/vue-elementui-customized'
+  ]
   chainWebpack: (config) => {
     config.resolve.alias
-      .set('element-ui', resolve(''@liguang/vue-elementui-customized/src/elementui'))
+      .set('element-ui', resolve('@liguang/vue-elementui-customized/src/elementui'))
   }
 }
 ```
@@ -28,7 +35,7 @@ module.exports = {
 此模块大大方便了Modal的使用，使用方式如下：
 
     1. 编写Modal组件
-    
+
 ```vue
 // TestModal.vue
 <template>
@@ -51,7 +58,7 @@ export default {
 ```
 
     2. 初始化
-        
+
 ```javascript
 import Modal from '@liguang/vue-elementui-customized/modal'
 // 参数为待注入的对象，是可选项
@@ -61,9 +68,9 @@ Modal.initModal({
 })
 Vue.use(Modal)
 ```
-        
+
     3. 注册Modal组件
-    
+
 ```javascript
 import TestModal from './models/TestModal.vue'
 import Modal from '@liguang/vue-elementui-customized/modal'
@@ -79,7 +86,7 @@ for (let key in modals) {
 ```
 
     4. 使用
-    
+
 ```javascript
 import Vue from 'vue'
 let rst = Vue.prototype.modal('TestModal', arg0, arg1, ...)
@@ -91,7 +98,7 @@ rst.promise.then(data => {
   console.log(err)
 })
 ```
-        
+
 ### 示例
 
 [查看示例](https://liguang86.github.io/vue-elementui-customized/dist/)

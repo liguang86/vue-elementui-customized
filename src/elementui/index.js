@@ -1,6 +1,3 @@
-require('./packages/theme-chalk/src/index.scss')
-
-
 import Pagination from './packages/pagination/index.js'
 import Dialog from './packages/dialog/index.js'
 import Autocomplete from './packages/autocomplete/index.js'
