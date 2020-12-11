@@ -8,7 +8,7 @@
     ]"
   >
     <li
-      v-for="file in files"
+      v-for="file in files" v-dragging="{item: file, list: files, group: 'uid'}"
       :class="['el-upload-list__item', 'is-' + file.status, focusing ? 'focusing' : '']"
       :key="file.uid"
       tabindex="0"
@@ -62,6 +62,10 @@
 <script>
   import Locale from 'element-ui/src/mixins/locale';
   import ElProgress from 'element-ui/packages/progress';
+  import Vue from 'vue';
+  import VueDND from 'awe-dnd';
+
+  Vue.use(VueDND)
 
   export default {
 
@@ -89,6 +93,13 @@
       },
       handlePreview: Function,
       listType: String
+    },
+    mounted () {
+      if (this.$dragging) {
+        this.$dragging.$on('dragged', ({ value }) => {
+          this.$emit('sort', value)
+        })
+      }
     },
     methods: {
       parsePercentage(val) {

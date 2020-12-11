@@ -94,6 +94,10 @@ export default {
       default: 2048,
       type: Number
     },
+    compressImage: {
+      default: true,
+      type: Boolean
+    },
     notImage: {
       default: false,
       type: Boolean
@@ -175,27 +179,37 @@ export default {
       }
 
       if (this.isImage(originalRawFile.type)) {
-        // 压缩图片
-        compressImageFile(originalRawFile, this.maxPix || 1000, this.quality || 1).then(rawFile => {
-          rawFile.name = originalRawFile.name
-          rawFile.uid = originalRawFile.uid
+        debugger
+        if (this.compressImage) {
+          // 压缩图片
+          compressImageFile(originalRawFile, this.maxPix || 1000, this.quality || 1).then(rawFile => {
+            rawFile.name = originalRawFile.name
+            rawFile.uid = originalRawFile.uid
 
-          if (this.maxSize !== -1 && rawFile.size > this.maxSize * 1000) {
+            if (this.maxSize !== -1 && rawFile.size > this.maxSize * 1000) {
+              this.onError('您的图片太大了，请处理后再上传', originalRawFile);
+              return
+            }
+
+            done(rawFile)
+          }).catch(() => {
+            this.onError('图片处理出错', originalRawFile);
+          })
+        } else {
+          if (this.maxSize !== -1 && originalRawFile.size > this.maxSize * 1000) {
             this.onError('您的图片太大了，请处理后再上传', originalRawFile);
             return
           }
 
-          done(rawFile)
-        }).catch(() => {
-          this.onError('图片处理出错', originalRawFile);
-        })
+          done(originalRawFile)
+        }
       } else {
         if (!this.notImage) {
           this.onError('请选择图片文件', originalRawFile);
           return
         }
         if (this.maxSize !== -1 && originalRawFile.size > this.maxSize * 1000) {
-          this.onError(`最大上传限制为${this.maxSize % 1024}M`, originalRawFile);
+          this.onError(`最大上传限制为${this.maxSize / 1024}M`, originalRawFile);
           return
         }
         done(originalRawFile)
@@ -229,7 +243,7 @@ export default {
           this.onProgress(e, rawFile);
         },
         onSuccess: res => {
-          if (res.statusCode !== '200') {
+          if (res.statusCode + '' !== '200') {
             this.onError(res.errorMessage || '上传失败', rawFile)
           } else {
             this.onSuccess(res, rawFile);

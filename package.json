@@ -1,6 +1,6 @@
 {
   "name": "@liguang/vue-elementui-customized",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "自定义了Input、InputNumber、Loading、Tooltip、Upload 以及 Clickoutside",
   "private": false,
   "keyword": "vue-element-ui-customized",
@@ -25,7 +25,8 @@
     "promise": "^8.0.3",
     "resize-observer-polyfill": "^1.5.1",
     "throttle-debounce": "^2.1.0",
-    "vue": "^2.6.10"
+    "vue": "^2.6.10",
+    "awe-dnd": "^0.3.4"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.1.0",

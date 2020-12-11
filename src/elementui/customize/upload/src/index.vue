@@ -69,6 +69,10 @@ export default {
       type: Function,
       default: noop
     },
+    onSort: {
+      type: Function,
+      default: noop
+    },
     onPreview: {
       type: Function
     },
@@ -119,6 +123,10 @@ export default {
     maxSize: {
       default: 2048,
       type: Number
+    },
+    compressImage: {
+      default: true,
+      type: Boolean
     },
     // 是否可以上传非图片的文件
     notImage: {
@@ -225,6 +233,9 @@ export default {
       this.onError(err, file, this.uploadFiles);
       this.onChange(file, this.uploadFiles);
     },
+    sortHandler(value) {
+      this.onSort(value.item, this.uploadFiles)
+    },
     handleRemove(file, raw) {
       if (raw) {
         file = this.getFile(raw);
@@ -300,6 +311,7 @@ export default {
           listType={this.listType}
           files={this.uploadFiles}
           on-remove={this.handleRemove}
+          on-sort={this.sortHandler}
           handlePreview={this.onPreview}>
         </UploadList>
       );
@@ -333,6 +345,7 @@ export default {
         quality: this.quality,
         maxPix: this.maxPix,
         maxSize: this.maxSize,
+        compressImage: this.compressImage,
         notImage: this.notImage
       },
       ref: 'upload-inner'
