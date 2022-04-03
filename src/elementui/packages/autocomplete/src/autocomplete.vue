@@ -10,7 +10,8 @@
     <el-input
       ref="input"
       v-bind="[$props, $attrs]"
-      @input="handleChange"
+      @input="handleInput"
+      @change="handleChange"
       @focus="handleFocus"
       @blur="handleBlur"
       @clear="handleClear"
@@ -57,7 +58,7 @@
   </div>
 </template>
 <script>
-  import {debounce} from 'throttle-debounce';
+  import debounce from 'throttle-debounce/debounce';
   import ElInput from 'element-ui/packages/input';
   import Clickoutside from 'element-ui/src/utils/clickoutside';
   import ElAutocompleteSuggestions from './autocomplete-suggestions.vue';
@@ -186,7 +187,7 @@
           }
         });
       },
-      handleChange(value) {
+      handleInput(value) {
         this.$emit('input', value);
         this.suggestionDisabled = false;
         if (!this.triggerOnFocus && !value) {
@@ -195,6 +196,9 @@
           return;
         }
         this.debouncedGetData(value);
+      },
+      handleChange(value) {
+        this.$emit('change', value);
       },
       handleFocus(event) {
         this.activated = true;

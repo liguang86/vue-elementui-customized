@@ -2,7 +2,9 @@
   <div id="app">
     <h2>示例</h2>
     <div>
-      <el-button type="primary" @click="test">点我弹框吧</el-button>
+      <el-button type="primary" @click="testModal">普通弹框</el-button>
+      <el-button type="primary" @click="testDraggableModal">可拖动弹框</el-button>
+      <el-button type="primary" @click="testStaticModal">静态可拖动弹框</el-button>
       <br/>
       <br/>
     </div>
@@ -29,8 +31,22 @@ export default {
     }
   },
   methods: {
-    test () {
+    testModal () {
       this.modal('TestModal', '点了我').promise.then(rst => {
+        console.log(rst)
+      }).catch(rst => {
+        console.log(rst)
+      })
+    },
+    testDraggableModal () {
+      this.modal('TestDraggableModal', '点了我').promise.then(rst => {
+        console.log(rst)
+      }).catch(rst => {
+        console.log(rst)
+      })
+    },
+    testStaticModal () {
+      this.staticModal('TestStaticModal', '点了我').promise.then(rst => {
         console.log(rst)
       }).catch(rst => {
         console.log(rst)

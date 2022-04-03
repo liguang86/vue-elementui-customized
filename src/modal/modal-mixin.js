@@ -3,11 +3,18 @@ import _ from 'lodash'
 export default {
   data () {
     return {
-      visible: false
+      visible: false,
+      preventCloseOnRoute: false
     }
   },
   methods: {
     open (delay) {
+      if (this.visible) {
+        try {
+          this.$root.$children[0].$children[0].bringToFront()
+        } catch (e) {}
+        return this.openPromise
+      }
       if (delay && _.isNumber(delay)) {
         this.visibleDelayHandler = setTimeout(() => {
           this.visible = true
@@ -15,7 +22,7 @@ export default {
       } else {
         this.visible = true
       }
-      return new Promise((resolve, reject) => {
+      this.openPromise = new Promise((resolve, reject) => {
         this.resolve = resolve
         this.reject = reject
       }).finally(() => {
@@ -24,6 +31,7 @@ export default {
           this.doDestroy()
         }, 500)
       })
+      return this.openPromise
     },
     clearVisibleDealyHandler () {
       this.visibleDelayHandler && clearTimeout(this.visibleDelayHandler)
@@ -44,8 +52,12 @@ export default {
       }
     }
   },
+  beforeDestroy () {},
   watch: {
     '$route' () {
+      if (this.preventCloseOnRoute) {
+        return
+      }
       if (this.visible) {
         this.close()
       } else {

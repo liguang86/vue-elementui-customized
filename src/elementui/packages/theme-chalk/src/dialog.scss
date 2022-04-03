@@ -28,6 +28,10 @@
     left: 0;
     overflow: auto;
     margin: 0;
+
+    &.draggable .el-dialog {
+      margin: 0;
+    }
   }
 
   @include e(header) {

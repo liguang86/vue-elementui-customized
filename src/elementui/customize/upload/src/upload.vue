@@ -1,7 +1,6 @@
 <script>
 import ajax from './ajax';
 import UploadDragger from './upload-dragger.vue';
-import Promise from 'promise'
 
 let compressImageFile = (file, maxPix, quality) => {
   return new Promise((resolve, reject) => {

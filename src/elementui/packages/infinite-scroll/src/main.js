@@ -1,4 +1,4 @@
-import {throttle} from 'throttle-debounce';
+import throttle from 'throttle-debounce/debounce';
 import {
   isHtmlElement,
   isFunction,
@@ -91,6 +91,9 @@ const handleScroll = function(cb) {
   const { distance, disabled } = getScrollOptions(el, vm);
 
   if (disabled) return;
+
+  const containerInfo = container.getBoundingClientRect();
+  if (!containerInfo.width && !containerInfo.height) return;
 
   let shouldTrigger = false;
 

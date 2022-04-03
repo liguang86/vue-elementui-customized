@@ -41,6 +41,11 @@ export default {
     closeOnClickModal: {
       type: Boolean,
       default: false
+    },
+    // 是否隐藏遮罩
+    hideMask: {
+      type: Boolean,
+      default: false
     }
   },
 
@@ -109,6 +114,16 @@ export default {
       }
     },
 
+    // 市里时将此弹窗zIndex重新设置为最上层
+    bringToFront () {
+      const dom = this.$el
+      if (PopupManager.zIndex === dom.style.zIndex) return
+      if (!this.hideMask) {
+        PopupManager.openModal(this._popupId, PopupManager.nextZIndex(), this.modalAppendToBody ? undefined : dom, this.modalClass, this.modalFade, this.hideMask)
+      }
+      dom.style.zIndex = PopupManager.nextZIndex()
+    },
+
     doOpen(props) {
       if (this.$isServer) return;
       if (this.willOpen && !this.willOpen()) return;
@@ -130,7 +145,7 @@ export default {
           PopupManager.closeModal(this._popupId);
           this._closing = false;
         }
-        PopupManager.openModal(this._popupId, PopupManager.nextZIndex(), this.modalAppendToBody ? undefined : dom, props.modalClass, props.modalFade);
+        PopupManager.openModal(this._popupId, PopupManager.nextZIndex(), this.modalAppendToBody ? undefined : dom, props.modalClass, props.modalFade, this.hideMask);
         if (props.lockScroll) {
           this.withoutHiddenClass = !hasClass(document.body, 'el-popup-parent--hidden');
           if (this.withoutHiddenClass) {

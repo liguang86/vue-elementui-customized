@@ -32,6 +32,7 @@ const registerModal = (name, ModalComponent) => {
   initVueComponentInModals(name)
 }
 
+const staticModals = {}
 export default {
   initModal,
   registerModal,
@@ -65,6 +66,36 @@ export default {
         document.body.removeChild(vm.$el)
         vm.$destroy()
         return null
+      }
+    }
+    Vue.prototype.staticModal = function () {
+      const name = arguments[0]
+      const modal = staticModals[name]
+      if (name && modal) {
+        let promise = modal.init.apply(modal, [...arguments].slice(1, arguments.length))
+        if (promise) {
+          const rst = {ref: modal, promise}
+          staticModals[name] = rst.ref
+          promise.finally(() => {
+            delete staticModals[name]
+          })
+          return rst
+        } else {
+          const vm = modal.$parent
+          document.body.removeChild(vm.$el)
+          vm.$destroy()
+          delete staticModals[name]
+          return null
+        }
+      } else {
+        const rst = Vue.prototype.modal.apply(modal, arguments)
+        if (rst) {
+          staticModals[name] = rst.ref
+          rst.promise.finally(() => {
+            delete staticModals[name]
+          })
+        }
+        return rst
       }
     }
   }

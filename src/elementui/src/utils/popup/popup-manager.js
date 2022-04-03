@@ -3,7 +3,7 @@ import { addClass, removeClass } from 'element-ui/src/utils/dom';
 
 let hasModal = false;
 let hasInitZIndex = false;
-let zIndex;
+let zIndex = 2000;
 
 const getModal = function() {
   if (Vue.prototype.$isServer) return;
@@ -57,6 +57,7 @@ const PopupManager = {
   modalStack: [],
 
   doOnModalClick: function() {
+    debugger
     const topItem = PopupManager.modalStack[PopupManager.modalStack.length - 1];
     if (!topItem) return;
 
@@ -66,7 +67,7 @@ const PopupManager = {
     }
   },
 
-  openModal: function(id, zIndex, dom, modalClass, modalFade) {
+  openModal: function(id, zIndex, dom, modalClass, modalFade, hideMask) {
     if (Vue.prototype.$isServer) return;
     if (!id || zIndex === undefined) return;
     this.modalFade = modalFade;
@@ -80,31 +81,33 @@ const PopupManager = {
       }
     }
 
-    const modalDom = getModal();
+    if (!hideMask) {
+      const modalDom = getModal();
 
-    addClass(modalDom, 'v-modal');
-    if (this.modalFade && !hasModal) {
-      addClass(modalDom, 'v-modal-enter');
-    }
-    if (modalClass) {
-      let classArr = modalClass.trim().split(/\s+/);
-      classArr.forEach(item => addClass(modalDom, item));
-    }
-    setTimeout(() => {
-      removeClass(modalDom, 'v-modal-enter');
-    }, 200);
+      addClass(modalDom, 'v-modal');
+      if (this.modalFade && !hasModal) {
+        addClass(modalDom, 'v-modal-enter');
+      }
+      if (modalClass) {
+        let classArr = modalClass.trim().split(/\s+/);
+        classArr.forEach(item => addClass(modalDom, item));
+      }
+      setTimeout(() => {
+        removeClass(modalDom, 'v-modal-enter');
+      }, 200);
 
-    if (dom && dom.parentNode && dom.parentNode.nodeType !== 11) {
-      dom.parentNode.appendChild(modalDom);
-    } else {
-      document.body.appendChild(modalDom);
-    }
+      if (dom && dom.parentNode && dom.parentNode.nodeType !== 11) {
+        dom.parentNode.appendChild(modalDom);
+      } else {
+        document.body.appendChild(modalDom);
+      }
 
-    if (zIndex) {
-      modalDom.style.zIndex = zIndex;
+      if (zIndex) {
+        modalDom.style.zIndex = zIndex;
+      }
+      modalDom.tabIndex = 0;
+      modalDom.style.display = '';
     }
-    modalDom.tabIndex = 0;
-    modalDom.style.display = '';
 
     this.modalStack.push({ id: id, zIndex: zIndex, modalClass: modalClass });
   },
@@ -114,16 +117,24 @@ const PopupManager = {
     const modalDom = getModal();
 
     if (modalStack.length > 0) {
-      const topItem = modalStack[modalStack.length - 1];
+      let topItem = modalStack[modalStack.length - 1]
       if (topItem.id === id) {
-        if (topItem.modalClass) {
+        let instance = PopupManager.getInstance(topItem.id)
+        if (instance && !instance.hideMask && topItem.modalClass) {
           let classArr = topItem.modalClass.trim().split(/\s+/);
           classArr.forEach(item => removeClass(modalDom, item));
         }
 
-        modalStack.pop();
+        modalStack.pop()
         if (modalStack.length > 0) {
-          modalDom.style.zIndex = modalStack[modalStack.length - 1].zIndex;
+          for (let idx = modalStack.length - 1; idx > -1; idx--) {
+            const item = modalStack[idx]
+            instance = PopupManager.getInstance(item.id)
+            if (instance && !instance.hideMask) {
+              modalDom.style.zIndex = item.zIndex
+              break
+            }
+          }
         }
       } else {
         for (let i = modalStack.length - 1; i >= 0; i--) {
@@ -135,12 +146,14 @@ const PopupManager = {
       }
     }
 
-    if (modalStack.length === 0) {
+    let hasMaskModal = modalStack.find(e => !PopupManager.getInstance(e.id).hideMask)
+    if (!hasMaskModal) {
       if (this.modalFade) {
         addClass(modalDom, 'v-modal-leave');
       }
       setTimeout(() => {
-        if (modalStack.length === 0) {
+        hasMaskModal = modalStack.find(e => !PopupManager.getInstance(e.id).hideMask)
+        if (!hasMaskModal) {
           if (modalDom.parentNode) modalDom.parentNode.removeChild(modalDom);
           modalDom.style.display = 'none';
           PopupManager.modalDom = undefined;
@@ -155,7 +168,7 @@ Object.defineProperty(PopupManager, 'zIndex', {
   configurable: true,
   get() {
     if (!hasInitZIndex) {
-      zIndex = zIndex || (Vue.prototype.$ELEMENT || {}).zIndex || 2000;
+      zIndex = (Vue.prototype.$ELEMENT || {}).zIndex || zIndex;
       hasInitZIndex = true;
     }
     return zIndex;
