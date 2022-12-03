@@ -178,7 +178,6 @@ export default {
       }
 
       if (this.isImage(originalRawFile.type)) {
-        debugger
         if (this.compressImage) {
           // 压缩图片
           compressImageFile(originalRawFile, this.maxPix || 1000, this.quality || 1).then(rawFile => {

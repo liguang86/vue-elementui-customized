@@ -170,6 +170,10 @@ export default {
     draggableInitPosition: {
       type: Object,
       default: null
+    },
+    draggableDefaultCenter: {
+      type: Boolean,
+      default: false
     }
   },
 

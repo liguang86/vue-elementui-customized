@@ -57,7 +57,6 @@ const PopupManager = {
   modalStack: [],
 
   doOnModalClick: function() {
-    debugger
     const topItem = PopupManager.modalStack[PopupManager.modalStack.length - 1];
     if (!topItem) return;
 

@@ -329,10 +329,12 @@
         return true
       },
       focus() {
-        this.getInput().focus();
+        const el = this.getInput();
+        el && el.focus();
       },
       blur() {
-        this.getInput().blur();
+        const el = this.getInput();
+        el && el.blur();
       },
       getMigratingConfig() {
         return {
@@ -359,6 +361,7 @@
         if (this.$isServer) return;
         const { autosize, type } = this;
         if (type !== 'textarea') return;
+        if (!this.$refs.textarea) return; // 如果被销毁，则此ref为null
         if (!autosize) {
           this.textareaCalcStyle = {
             minHeight: calcTextareaHeight(this.$refs.textarea).minHeight
