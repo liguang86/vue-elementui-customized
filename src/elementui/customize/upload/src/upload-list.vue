@@ -6,6 +6,7 @@
       'el-upload-list--' + listType,
       { 'is-disabled': disabled }
     ]"
+    name="el-list"
   >
     <li
       v-for="file in files" v-dragging="{item: file, list: files, group: 'uid'}"
