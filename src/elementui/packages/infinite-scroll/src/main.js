@@ -58,6 +58,10 @@ const attributes = {
   immediate: {
     type: Boolean,
     default: true
+  },
+  attachwindow: {
+    type: Boolean,
+    default: false
   }
 };
 
@@ -92,7 +96,7 @@ const handleScroll = function(cb) {
 
   if (disabled) return;
 
-  const containerInfo = container.getBoundingClientRect();
+  const containerInfo = container === window ? { width: window.innerWidth, height: window.innerHeight } : container.getBoundingClientRect();
   if (!containerInfo.width && !containerInfo.height) return;
 
   let shouldTrigger = false;
@@ -102,10 +106,14 @@ const handleScroll = function(cb) {
     const scrollBottom = container.scrollTop + getClientHeight(container);
     shouldTrigger = container.scrollHeight - scrollBottom <= distance;
   } else {
-    const heightBelowTop = getOffsetHeight(el) + getElementTop(el) - getElementTop(container);
-    const offsetHeight = getOffsetHeight(container);
-    const borderBottom = Number.parseFloat(getStyleComputedProperty(container, 'borderBottomWidth'));
-    shouldTrigger = heightBelowTop - offsetHeight + borderBottom <= distance;
+    if (container === window) {
+      shouldTrigger = document.documentElement.offsetHeight <= (window.innerHeight + document.documentElement.scrollTop - distance)
+    } else {
+      const heightBelowTop = getOffsetHeight(el) + getElementTop(el) - getElementTop(container);
+      const offsetHeight = getOffsetHeight(container);
+      const borderBottom = Number.parseFloat(getStyleComputedProperty(container, 'borderBottomWidth'));
+      shouldTrigger = heightBelowTop - offsetHeight + borderBottom <= distance;
+    }
   }
 
   if (shouldTrigger && isFunction(cb)) {
@@ -124,9 +132,10 @@ export default {
 
     const vm = vnode.context;
     // only include vertical scroll
-    const container = getScrollContainer(el, true);
-    const { delay, immediate } = getScrollOptions(el, vm);
+    const { delay, immediate, attachwindow } = getScrollOptions(el, vm);
     const onScroll = throttle(delay, handleScroll.bind(el, cb));
+
+    const container = attachwindow ? window : getScrollContainer(el, true);
 
     el[scope] = { el, vm, container, onScroll };
 
@@ -135,7 +144,7 @@ export default {
 
       if (immediate) {
         const observer = el[scope].observer = new MutationObserver(onScroll);
-        observer.observe(container, { childList: true, subtree: true });
+        observer.observe(container === window ? el : container, { childList: true, subtree: true });
         onScroll();
       }
     }

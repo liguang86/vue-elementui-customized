@@ -13,3 +13,4 @@
     - `hideMask` Boolean，是否隐藏遮罩，默认为 `false`
     - `hideOutside` Boolean，是否隐藏除了content之外的部分，默认为 `false`
     - `draggableInitPosition` Object，所在初始位置，如 { left: 0, top: 0, *right*: 0, *bottom*: 0 }，`right` 和 `bottom` 为可选属性
+    - `infinite-scroll` 添加 infinite-scroll-attachwindow 属性，可以传 true 表示滚动容器为 window
