@@ -325,7 +325,7 @@
     methods: {
       strValid (newValue) {
         if (newValue.length > 0 && (this.validationRegex || (this.inputType && regObj[this.inputType]))) {
-          return (this.validationRegex ? this.validationRegex[0] : regObj[this.inputType])[0].test(newValue)
+          return (this.validationRegex ? this.validationRegex[0] : regObj[this.inputType]).test(newValue)
         }
         return true
       },

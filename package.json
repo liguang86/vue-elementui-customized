@@ -1,6 +1,6 @@
 {
   "name": "@liguang/vue-elementui-customized",
-  "version": "0.1.9",
+  "version": "0.1.12",
   "description": "自定义了Input、InputNumber、Loading、Tooltip、Upload、Dialog 以及 Clickoutside",
   "private": false,
   "keyword": "vue-element-ui-customized",

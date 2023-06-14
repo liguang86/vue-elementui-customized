@@ -107,12 +107,12 @@ const handleScroll = function(cb) {
     shouldTrigger = container.scrollHeight - scrollBottom <= distance;
   } else {
     if (container === window) {
-      shouldTrigger = document.documentElement.offsetHeight <= (window.innerHeight + document.documentElement.scrollTop - distance)
+      shouldTrigger = document.documentElement.offsetHeight <= Math.ceil(window.innerHeight + document.documentElement.scrollTop + distance)
     } else {
       const heightBelowTop = getOffsetHeight(el) + getElementTop(el) - getElementTop(container);
       const offsetHeight = getOffsetHeight(container);
       const borderBottom = Number.parseFloat(getStyleComputedProperty(container, 'borderBottomWidth'));
-      shouldTrigger = heightBelowTop - offsetHeight + borderBottom <= distance;
+      shouldTrigger = Math.floor(heightBelowTop + borderBottom) - offsetHeight <= distance;
     }
   }
 
